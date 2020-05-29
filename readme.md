@@ -45,6 +45,8 @@ Will be ignored if this.isMongo is truthy (See isMongo<Boolean>)
 #### isMongo<Boolean>
 Boolean indicating whether the provided path is a file or a mongodb server
 Defaults to true if the path starts with "mongodb", false otherwise.
+
+Notice: If you need to interact with a mongodb server, you need to install mongodb yourself
 #### db<String>
 Database name, defaulting to "infodbs"
 #### collection<String>
