@@ -1,12 +1,12 @@
 const fs = require('fs');
 
 let MongoClient;
+let mongo;
 
 class Db {
   constructor(file, defaultStr, isMongo, db, collection) {
     this.genProxy = (data) => new Proxy(data, {
-      set: (pObj, prop, val) => {
-        const obj = pObj;
+      set: (obj, prop, val) => {
         obj[prop] = val;
         if (this.saveOnChange) {
           this.update();
@@ -26,16 +26,18 @@ class Db {
         return true;
       },
       get: (obj, prop) => (typeof obj[prop] === 'object' || Array.isArray(obj[prop])
-        ? this.genProxy(obj[prop].map((val) => { const v = val; delete v._id; return v; }))
+        ? this.genProxy(obj[prop])
         : obj[prop]),
     });
     if (!file) throw new Error('No path provided');
+    if (typeof file !== 'string') throw new Error('Provided path is not a string');
     const dis = this;
     return (async () => {
       dis.path = file;
       dis.isMongo = typeof isMongo === 'boolean' ? isMongo : dis.path.startsWith('mongodb');
       if (dis.isMongo) {
-        MongoClient = (await import('mongodb')).default.MongoClient;
+        mongo = (await import('mongodb')).default;
+        MongoClient = mongo.MongoClient;
         dis.client = await MongoClient.connect(file, {
           useNewUrlParser: true,
           useUnifiedTopology: true,
@@ -72,7 +74,6 @@ class Db {
           return v;
         });
         process.on('exit', dis.client.close);
-        dis.value = dis.genProxy(dis.readOnlyValue);
       } else {
         if (!fs.existsSync(file)) {
           fs.writeFileSync(file, defaultStr ?? '{}', (err) => {
@@ -82,7 +83,6 @@ class Db {
           });
         }
         dis.readOnlyValue = JSON.parse(fs.readFileSync(file, 'utf8'));
-        dis.value = dis.genProxy(dis.readOnlyValue);
       }
       dis.saveOnChange = true;
       return dis;
@@ -101,8 +101,8 @@ class Db {
       fs.writeFileSync(this.path, JSON.stringify(this.readOnlyValue, null, '\t'));
       return this.readOnlyValue;
     }
-    this.rawContent.forEach((val) => {
-      this.collection.deleteOne({ _id: val._id });
+    this.rawContent.forEach(async (val) => {
+      await this.collection.deleteOne({ _id: new mongo.ObjectID(val._id) });
     });
     if (this.readOnlyValue.length > 0) this.collection.insertMany(this.readOnlyValue);
     this.rawContent = JSON.parse(JSON.stringify(await this.collection.find({}).toArray()));
@@ -111,7 +111,6 @@ class Db {
         this.rawContent,
       ),
     ).map((val) => { const v = val; delete v._id; return v; });
-    this.value = this.genProxy(this.readOnlyValue);
     return this.readOnlyValue;
   }
 
@@ -139,7 +138,18 @@ class Db {
     }
     return pseudoValue;
   }
+
+  set value(setTo) {
+    this.readOnlyValue = setTo;
+    if (this.saveOnChange) {
+      this.update();
+    }
+    return true;
+  }
+
+  get value() {
+    this.readOnlyValue = this.readOnlyValue.map((v) => { const r = v; delete r._id; return r; });
+    return this.genProxy(this.readOnlyValue);
+  }
 }
 module.exports = Db;
-// Hey u still here?
-//

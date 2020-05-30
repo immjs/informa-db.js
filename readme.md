@@ -37,7 +37,7 @@ Before you ask, those all work.
 ### new Db( path<String>, defaultString<String>, isMongo<Boolean>, db<String>, collection<String> )
 #### path
 Path to file or URI to mongodb server.
-Will throw an error if none provided
+Will throw an error if none provided or if type is incorrect
 #### defaultString
 Default string to write on file if it doesn't exist.
 Defaults to '{}'
