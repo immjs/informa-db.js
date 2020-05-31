@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "wolfpat01",
+      "name": "Haouari haithem",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/57036855?v=4",
+      "profile": "https://github.com/wolfpat01",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "informa-db.js",
+  "projectOwner": "informathemusic",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
