@@ -51,7 +51,7 @@ Notice: If you need to interact with a mongodb server, you need to install mongo
 Database name, defaulting to "infodbs"
 #### collection<String>
 Collection name, defaulting to "db"
-### Db function and properties
+### Db class
 #### Db.readOnlyValue<Any>
 File/collection content
 #### Db.value<Proxy<Any>>

@@ -1,8 +1,15 @@
 const fs = require('fs');
 
-let MongoClient;
 let mongo;
+let MongoClient;
+try {
+  mongo = require('mongodb');
 
+  MongoClient = mongo.MongoClient;
+} catch (err) {
+  mongo = null;
+  MongoClient = null;
+}
 class Db {
   constructor(file, defaultStr, isMongo, db, collection) {
     this.genProxy = (data) => new Proxy(data, {
@@ -36,8 +43,9 @@ class Db {
       dis.path = file;
       dis.isMongo = typeof isMongo === 'boolean' ? isMongo : dis.path.startsWith('mongodb');
       if (dis.isMongo) {
-        mongo = (await import('mongodb')).default;
-        MongoClient = mongo.MongoClient;
+        if (!mongo) {
+          throw new Error('Mongodb is not installed. Please install it.');
+        }
         dis.client = await MongoClient.connect(file, {
           useNewUrlParser: true,
           useUnifiedTopology: true,
@@ -76,7 +84,7 @@ class Db {
         process.on('exit', dis.client.close);
       } else {
         if (!fs.existsSync(file)) {
-          fs.writeFileSync(file, defaultStr ?? '{}', (err) => {
+          fs.writeFileSync(file, defaultStr || '{}', (err) => {
             if (err) {
               throw err;
             }
