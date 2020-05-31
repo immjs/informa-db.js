@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "informathemusic",
+      "name": "informathemusic",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/39065949?v=4",
+      "profile": "https://github.com/informathemusic",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "informa-db.js",
+  "projectOwner": "informathemusic",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
