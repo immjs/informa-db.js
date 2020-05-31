@@ -14,7 +14,7 @@ try {
  * Class represents The concept to interact with storage units (such as Dbs or JSON files) by defining variables.
  */
 class Db {
-  /**
+  /** 
    * Create a dot.
    * @param {path} path - Path to file or URI to mongodb server. Will throw an error if none provided or if type is incorrect
    * @param {string} defaultStr - Default string to write on file if it doesn't exist. Defaults to '{}' Will be ignored if this.isMongo is truthy (See isMongo)
@@ -23,7 +23,7 @@ class Db {
    * @param {string} collection - Collection name, defaulting to "db"
    */
   constructor(path, defaultStr, isMongo, db, collection) {
-
+    
     this.genProxy = (data) => new Proxy(data, {
 
       set: (obj, prop, val) => {
@@ -145,6 +145,10 @@ class Db {
     return !!this.readOnlyValue[index]
   }
 
+  /**
+   * Updates the file/db to {@link this.readOnlyValue[index]}
+   * @returns {Array} - the dataBase
+   */
   async update() {
 
     if (!this.isMongo) {
@@ -168,39 +172,49 @@ class Db {
 
     return this.readOnlyValue;
   }
+  /**
+   * Defines {@link this.readOnlyValue[index]} to value.
+   * If {@link this.readOnlyValue[index]} already exists, will thorught error
+   * @param {number} index - index in the dataBase
+   * @param {any} newValue - the new value
+   */
+  add(index, value) {
 
-  add(index, pseudoValue) {
+    if (this.exist(index)) {
 
-    if (!this.exist(index)) {
+      throw console.error(`the value ${value} in the index ${index} already exists`);
+    } 
 
-      this.readOnlyValue[index] = pseudoValue;
-    } else {
-
-      return false;
-    }
     if (this.saveOnChange) {
 
-      return this.update()[index];
+      this.update()[index];
     }
-
-    return pseudoValue;
   }
 
+  /**
+   * Splices out/deletes {@link this.readOnlyValue[index]}
+   * @param {number} index - the index in the dataBase
+   */
   remove(index) {
 
     this.readOnlyValue.splice(index, 1);
     return undefined;
   }
 
-  addOverWrite(index, pseudoValue) {
+  /**
+   * Defines {@link this.readOnlyValue[index]} to value.
+   * @param {number} index - index in the dataBase
+   * @param {any} newValue - the new value
+   */
+  addOverWrite(index, newValue) {
 
-    this.readOnlyValue[index] = pseudoValue;
+    this.readOnlyValue[index] = newValue;
 
     if (this.saveOnChange) {
       return this.update(this.readOnlyValue)[index];
     }
 
-    return pseudoValue;
+    return newValue;
   }
 
   set value(setTo) {
