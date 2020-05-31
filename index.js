@@ -54,6 +54,7 @@ class Db {
       dis.isMongo = typeof isMongo === 'boolean' ? isMongo : dis.path.startsWith('mongodb');
 
       if (dis.isMongo) {
+
         if (!mongo) {
           throw new Error('Mongodb is not installed. Please install it.');
         }
@@ -130,12 +131,7 @@ class Db {
 
   exist(index) {
 
-    if (!this.readOnlyValue[index]) {
-
-      return false;
-    }
-
-    return true;
+    return !!this.readOnlyValue[index]
   }
 
   async update() {
