@@ -35,4 +35,4 @@ jobs:
       uses: a-b-r-o-w-n/eslint-action@v1.2.0
       with:
         # Token used to interact with the Github API.
-        repo-token: ${{secret.GITHUB_TOKEN}}
+        repo-token: ${{secrets.GITHUB_TOKEN}}
