@@ -10,8 +10,19 @@ try {
   mongo = null;
   MongoClient = null;
 }
+/**
+ * Class represents The concept to interact with storage units (such as Dbs or JSON files) by defining variables.
+ */
 class Db {
-  constructor(file, defaultStr, isMongo, db, collection) {
+  /**
+   * Create a dot.
+   * @param {path} path - Path to file or URI to mongodb server. Will throw an error if none provided or if type is incorrect
+   * @param {string} defaultStr - Default string to write on file if it doesn't exist. Defaults to '{}' Will be ignored if this.isMongo is truthy (See isMongo)
+   * @param {boolean} isMongo - Boolean indicating whether the provided path is a file or a mongodb server Defaults to true if the path starts with "mongodb", false otherwise.
+   * @param {string} db - Database name, defaulting to "infodbs"
+   * @param {string} collection - Collection name, defaulting to "db"
+   */
+  constructor(path, defaultStr, isMongo, db, collection) {
 
     this.genProxy = (data) => new Proxy(data, {
 
@@ -44,13 +55,13 @@ class Db {
         : obj[prop]),
     });
 
-    if (!file) throw new Error('No path provided');
-    if (typeof file !== 'string') throw new Error('Provided path is not a string');
+    if (!path) throw new Error('No path provided');
+    if (typeof path !== 'string') throw new Error('Provided path is not a string');
     const dis = this;
 
     return (async () => {
 
-      dis.path = file;
+      dis.path = path;
       dis.isMongo = typeof isMongo === 'boolean' ? isMongo : dis.path.startsWith('mongodb');
 
       if (dis.isMongo) {
@@ -59,7 +70,7 @@ class Db {
           throw new Error('Mongodb is not installed. Please install it.');
         }
 
-        dis.client = await MongoClient.connect(file, {
+        dis.client = await MongoClient.connect(path, {
 
           useNewUrlParser: true,
           useUnifiedTopology: true,
@@ -111,16 +122,16 @@ class Db {
         process.on('exit', dis.client.close);
       } else {
 
-        if (!fs.existsSync(file)) {
+        if (!fs.existsSync(path)) {
 
-          fs.writeFileSync(file, defaultStr || '{}', (err) => {
+          fs.writeFileSync(path, defaultStr || '{}', (err) => {
             if (err) {
               throw err;
             }
           });
         }
 
-        dis.readOnlyValue = JSON.parse(fs.readFileSync(file, 'utf8'));
+        dis.readOnlyValue = JSON.parse(fs.readFileSync(path, 'utf8'));
       }
 
       dis.saveOnChange = true;
