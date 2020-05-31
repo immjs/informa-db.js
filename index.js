@@ -10,10 +10,12 @@ try {
   mongo = null;
   MongoClient = null;
 }
+
 /**
  * Class represents The concept to interact with storage units (such as Dbs or JSON files) by defining variables.
  */
 class Db {
+
   /** 
    * Create a dot.
    * @param {path} path - Path to file or URI to mongodb server. Will throw an error if none provided or if type is incorrect
@@ -140,14 +142,18 @@ class Db {
     })();
   }
 
+  /**
+   * Checks if exists in index
+   * @param {number} index - the index in the dataBase/jsonfile
+   */
   exist(index) {
 
     return !!this.readOnlyValue[index]
   }
 
   /**
-   * Updates the file/db to {@link this.readOnlyValue[index]}
-   * @returns {Array} - the dataBase
+   * async Updates the file/db to {@link this.readOnlyValue[index]}
+   * @returns {any}  - the dataBase/jsonfile
    */
   async update() {
 
@@ -172,10 +178,11 @@ class Db {
 
     return this.readOnlyValue;
   }
+
   /**
    * Defines {@link this.readOnlyValue[index]} to value.
    * If {@link this.readOnlyValue[index]} already exists, will thorught error
-   * @param {number} index - index in the dataBase
+   * @param {number} index - index in the dataBase/jsonfile
    * @param {any} newValue - the new value
    */
   add(index, value) {
@@ -193,7 +200,7 @@ class Db {
 
   /**
    * Splices out/deletes {@link this.readOnlyValue[index]}
-   * @param {number} index - the index in the dataBase
+   * @param {number} index - the index in the dataBase/jsonfile
    */
   remove(index) {
 
@@ -203,7 +210,7 @@ class Db {
 
   /**
    * Defines {@link this.readOnlyValue[index]} to value.
-   * @param {number} index - index in the dataBase
+   * @param {number} index - index in the dataBase/jsonfile
    * @param {any} newValue - the new value
    */
   addOverWrite(index, newValue) {
@@ -217,6 +224,9 @@ class Db {
     return newValue;
   }
 
+  /**
+   * @type {string}
+   */
   set value(setTo) {
 
     this.readOnlyValue = setTo;
@@ -228,7 +238,6 @@ class Db {
 
     return true;
   }
-
   get value() {
 
     this.readOnlyValue = this.readOnlyValue.map((v) => { const r = v; delete r._id; return r; });
@@ -236,4 +245,5 @@ class Db {
     return this.genProxy(this.readOnlyValue);
   }
 }
+
 module.exports = Db;
