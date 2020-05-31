@@ -6,6 +6,9 @@
   "author": "InforMatheMusic",
   "license": "ISC",
   "repository": "https://github.com/informathemusic/informa-db.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "devDependencies": {
     "mongodb": "^3.5.8",
     "dotenv": "^8.2.0",
