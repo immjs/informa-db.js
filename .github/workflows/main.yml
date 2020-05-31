@@ -35,7 +35,7 @@ jobs:
       uses: ninosaurus/eslint-check@v5.3.1
       with:
         # github security token
-        repo-token: 7baf607ca854c92fd303cdae909f7513f85497ec
+        repo-token: ${{secrets.GITHUB_TOKEN}}
         # relative directory to node_modules
         custom-directory: ./node_modules
         # relative path to eslint config file eg. .eslintrc
