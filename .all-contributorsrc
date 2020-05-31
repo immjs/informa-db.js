@@ -6,6 +6,15 @@
   "commit": false,
   "contributors": [
     {
+      "login": "informathemusic",
+      "name": "informathemusic",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/39065949?v=4",
+      "profile": "https://github.com/informathemusic",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "wolfpat01",
       "name": "Haouari haithem",
       "avatar_url": "https://avatars1.githubusercontent.com/u/57036855?v=4",
