@@ -1,4 +1,5 @@
 const fs = require('fs');
+const utils = require("./utils")
 
 let mongo;
 let MongoClient;
@@ -57,8 +58,11 @@ class Db {
         : obj[prop]),
     });
 
+    // error Handling
     if (!path) throw new Error('No path provided');
     if (typeof path !== 'string') throw new Error('Provided path is not a string');
+    if (isMongo == true && mongo == null) throw new Error('mongodb library not installed you need to do npm install mongodb');
+
     const dis = this;
 
     return (async () => {
@@ -113,13 +117,10 @@ class Db {
         }
 
         dis.readOnlyValue = JSON.parse(JSON.stringify(await dis.collection.find({}).toArray()));
-        dis.rawContent = JSON.parse(JSON.stringify(dis.readOnlyValue));
-        dis.readOnlyValue = dis.readOnlyValue.map((val) => {
 
-          const v = val;
-          delete v._id;
-          return v;
-        });
+        dis.rawContent = JSON.parse(JSON.stringify(dis.readOnlyValue));
+
+        dis.readOnlyValue = dis.readOnlyValue.map(utils.deleteId);
 
         process.on('exit', dis.client.close);
       } else {
@@ -169,12 +170,11 @@ class Db {
     });
 
     if (this.readOnlyValue.length > 0) this.collection.insertMany(this.readOnlyValue);
+  
     this.rawContent = JSON.parse(JSON.stringify(await this.collection.find({}).toArray()));
-    this.readOnlyValue = JSON.parse(
-      JSON.stringify(
-        this.rawContent,
-      ),
-    ).map((val) => { const v = val; delete v._id; return v; });
+
+    this.readOnlyValue = JSON.parse(JSON.stringify(this.rawContent))
+                                  .map(utils.deleteId);
 
     return this.readOnlyValue;
   }
@@ -205,7 +205,6 @@ class Db {
   remove(index) {
 
     this.readOnlyValue.splice(index, 1);
-    return undefined;
   }
 
   /**
@@ -218,6 +217,7 @@ class Db {
     this.readOnlyValue[index] = newValue;
 
     if (this.saveOnChange) {
+
       return this.update(this.readOnlyValue)[index];
     }
 
@@ -240,7 +240,7 @@ class Db {
   }
   get value() {
 
-    this.readOnlyValue = this.readOnlyValue.map((v) => { const r = v; delete r._id; return r; });
+    this.readOnlyValue = this.readOnlyValue.map(utils.deleteId);
 
     return this.genProxy(this.readOnlyValue);
   }
