@@ -112,8 +112,16 @@ class Db {
           dis.collection = dis.collection.collection(collection);
         }
 
-        dis.readOnlyValue = JSON.parse(JSON.stringify(await dis.collection.find({}).toArray()));
-        dis.rawContent = JSON.parse(JSON.stringify(dis.readOnlyValue));
+        dis.readOnlyValue = JSON.parse(
+          JSON.stringify(
+            await dis.collection.find({}).toArray()
+          )
+        );
+        dis.rawContent = JSON.parse(
+          JSON.stringify(
+            dis.readOnlyValue
+          )
+        );
         dis.readOnlyValue = dis.readOnlyValue.map((val) => {
 
           const v = val;
@@ -133,7 +141,9 @@ class Db {
           });
         }
 
-        dis.readOnlyValue = JSON.parse(fs.readFileSync(path, 'utf8'));
+        dis.readOnlyValue = JSON.parse(
+          fs.readFileSync(path, 'utf8')
+        );
       }
 
       dis.saveOnChange = true;
@@ -169,7 +179,11 @@ class Db {
     });
 
     if (this.readOnlyValue.length > 0) this.collection.insertMany(this.readOnlyValue);
-    this.rawContent = JSON.parse(JSON.stringify(await this.collection.find({}).toArray()));
+    this.rawContent = JSON.parse(
+      JSON.stringify(
+        await this.collection.find({}).toArray()
+      )
+    );
     this.readOnlyValue = JSON.parse(
       JSON.stringify(
         this.rawContent,
@@ -185,7 +199,7 @@ class Db {
    * @param {number} index - index in the dataBase/jsonfile
    * @param {any} newValue - the new value
    */
-  add(index, value) {
+  addSafe(index, value) {
 
     if (this.exist(index)) {
 
@@ -213,7 +227,7 @@ class Db {
    * @param {number} index - index in the dataBase/jsonfile
    * @param {any} newValue - the new value
    */
-  addOverWrite(index, newValue) {
+  add(index, newValue) {
 
     this.readOnlyValue[index] = newValue;
 
@@ -239,9 +253,9 @@ class Db {
     return true;
   }
   get value() {
-
-    this.readOnlyValue = this.readOnlyValue.map((v) => { const r = v; delete r._id; return r; });
-
+    if(this.isMongo){
+      this.readOnlyValue = this.readOnlyValue.map((v) => { const r = v; delete r._id; return r; });
+    }
     return this.genProxy(this.readOnlyValue);
   }
 }

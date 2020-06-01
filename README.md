@@ -3,7 +3,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ## Concept
-The concept is to interact with storage units (such as Dbs or JSON files) by defining variables.
+The concept is to interact with storage units (such as Dbs or JSON files) by using javascript proxies.
 ## How to install it:
 `npm i informa-db.js`
 ## How to use it:
@@ -25,7 +25,7 @@ const Db = require('informa-db.js'); // Require the package
     });
   // Instead, use this more elegant way of doing it:
   if(!players.value[process.env.PLAYER])
-    players[process.env.PLAYER]={
+    players.value[process.env.PLAYER]={
       inventory: Array(20),
       equipment: Array(5),
       temporaryData: {
@@ -63,10 +63,10 @@ Proxy to this.readOnlyValue
 If is true, runs this.update() everytime a change is made (this.add(), this.addOverwrite(), this.remove() and changing this.value )
 #### Db.exist(index<Number, String>)<Boolean>
 Checks if this.readOnlyValue[index] exists
-#### Db.add(index<Number, String>, value<Any>)<Boolean, Any>
+#### Db.addSafe(index<Number, String>, value<Any>)<Boolean, Any>
 Defines this.readOnlyValue[index] to value.
 If this.readOnlyValue[index] already exists, will ignore and return false.
-#### Db.addOverwrite(index<Number, String>, value<Any>)<Any>
+#### Db.add(index<Number, String>, value<Any>)<Any>
 Defines this.readOnlyValue[index] to value.
 #### Db.remove(index<Number, String>)<Undefined>
 Splices out/deletes this.readOnlyValue[index]
