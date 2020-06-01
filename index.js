@@ -1,10 +1,10 @@
-const fs = require("fs");
-const utils = require("./utils");
+const fs = require('fs');
+const utils = require('./utils');
 
 let mongo;
 let MongoClient;
 try {
-  mongo = require("mongodb");
+  mongo = require('mongodb');
 
   MongoClient = mongo.MongoClient;
 } catch (err) {
@@ -52,30 +52,26 @@ class Db {
         },
 
         get: (obj, prop) =>
-          typeof obj[prop] === "object" || Array.isArray(obj[prop])
+          typeof obj[prop] === 'object' || Array.isArray(obj[prop])
             ? this.genProxy(obj[prop])
             : obj[prop],
       });
 
     // error Handling
-    if (!path) throw new Error("No path provided");
-    if (typeof path !== "string")
-      throw new Error("Provided path is not a string");
+    if (!path) throw new Error('No path provided');
+    if (typeof path !== 'string') throw new Error('Provided path is not a string');
     if (isMongo == true && mongo == null)
-      throw new Error(
-        "mongodb library not installed you need to do npm install mongodb"
-      );
+      throw new Error('mongodb library not installed you need to do npm install mongodb');
 
     const dis = this;
 
     return (async () => {
       dis.path = path;
-      dis.isMongo =
-        typeof isMongo === "boolean" ? isMongo : dis.path.startsWith("mongodb");
+      dis.isMongo = typeof isMongo === 'boolean' ? isMongo : dis.path.startsWith('mongodb');
 
       if (dis.isMongo) {
         if (!mongo) {
-          throw new Error("Mongodb is not installed. Please install it.");
+          throw new Error('Mongodb is not installed. Please install it.');
         }
 
         dis.client = await MongoClient.connect(path, {
@@ -86,18 +82,16 @@ class Db {
         if (!db) {
           if (
             !(await dis.client.db().admin().listDatabases()).databases.some(
-              (v) => v.name === "infodbs"
+              (v) => v.name === 'infodbs'
             )
           ) {
             throw new Error('"infodbs" is not a valid db.');
           }
 
-          dis.collection = dis.client.db("infodbs");
+          dis.collection = dis.client.db('infodbs');
         } else {
           if (
-            !(await dis.client.db().admin().listDatabases()).databases.some(
-              (v) => v.name === db
-            )
+            !(await dis.client.db().admin().listDatabases()).databases.some((v) => v.name === db)
           ) {
             throw new Error(` "${db}" is not a valid db.`);
           }
@@ -106,23 +100,19 @@ class Db {
         }
         if (!collection) {
           if (
-            !(
-              await (
-                await dis.client.db(db || "infodbs").listCollections()
-              ).toArray()
-            ).some((v) => v.name === "db")
+            !(await (await dis.client.db(db || 'infodbs').listCollections()).toArray()).some(
+              (v) => v.name === 'db'
+            )
           ) {
             throw new Error('"db" is not a valid collection.');
           }
 
-          dis.collection = dis.collection.collection("db");
+          dis.collection = dis.collection.collection('db');
         } else {
           if (
-            !(
-              await (
-                await dis.client.db(db || "infodbs").listCollections()
-              ).toArray()
-            ).some((v) => v.name === collection)
+            !(await (await dis.client.db(db || 'infodbs').listCollections()).toArray()).some(
+              (v) => v.name === collection
+            )
           ) {
             throw new Error(` "${collection}" is not a valid collection.`);
           }
@@ -130,21 +120,19 @@ class Db {
           dis.collection = dis.collection.collection(collection);
         }
 
-        dis.readOnlyValue = JSON.parse(
-          JSON.stringify(await dis.collection.find({}).toArray())
-        );
+        dis.readOnlyValue = JSON.parse(JSON.stringify(await dis.collection.find({}).toArray()));
 
         dis.rawContent = JSON.parse(JSON.stringify(dis.readOnlyValue));
 
         dis.readOnlyValue = dis.readOnlyValue.map(utils.deleteId);
 
-        process.on("exit", dis.client.close);
+        process.on('exit', dis.client.close);
       } else {
         if (!fs.existsSync(path)) {
-          fs.writeFileSync(path, defaultStr || "{}", utils.throwErrorIfError);
+          fs.writeFileSync(path, defaultStr || '{}', utils.throwErrorIfError);
         }
 
-        dis.readOnlyValue = JSON.parse(fs.readFileSync(path, "utf8"));
+        dis.readOnlyValue = JSON.parse(fs.readFileSync(path, 'utf8'));
       }
 
       dis.saveOnChange = true;
@@ -167,10 +155,7 @@ class Db {
    */
   async update() {
     if (!this.isMongo) {
-      fs.writeFileSync(
-        this.path,
-        JSON.stringify(this.readOnlyValue, null, "\t")
-      );
+      fs.writeFileSync(this.path, JSON.stringify(this.readOnlyValue, null, '\t'));
       return this.readOnlyValue;
     }
 
@@ -178,16 +163,11 @@ class Db {
       await this.collection.deleteOne({ _id: new mongo.ObjectID(val._id) });
     });
 
-    if (this.readOnlyValue.length > 0)
-      this.collection.insertMany(this.readOnlyValue);
+    if (this.readOnlyValue.length > 0) this.collection.insertMany(this.readOnlyValue);
 
-    this.rawContent = JSON.parse(
-      JSON.stringify(await this.collection.find({}).toArray())
-    );
+    this.rawContent = JSON.parse(JSON.stringify(await this.collection.find({}).toArray()));
 
-    this.readOnlyValue = JSON.parse(JSON.stringify(this.rawContent)).map(
-      utils.deleteId
-    );
+    this.readOnlyValue = JSON.parse(JSON.stringify(this.rawContent)).map(utils.deleteId);
 
     return this.readOnlyValue;
   }
@@ -200,9 +180,7 @@ class Db {
    */
   add(index, value) {
     if (this.exist(index)) {
-      throw console.error(
-        `the value ${value} in the index ${index} already exists`
-      );
+      throw console.error(`the value ${value} in the index ${index} already exists`);
     }
 
     if (this.saveOnChange) {
