@@ -19,10 +19,10 @@ class Db {
   /**
    * Create a dot.
    * @param {path} path - Path to file or URI to mongodb server. Will throw an error if none provided or if type is incorrect
-   * @param {string} defaultStr - Default string to write on file if it doesn't exist. Defaults to '{}' Will be ignored if this.isMongo is truthy (See isMongo)
-   * @param {boolean} isMongo - Boolean indicating whether the provided path is a file or a mongodb server Defaults to true if the path starts with "mongodb", false otherwise.
-   * @param {string} db - Database name, defaulting to "infodbs"
-   * @param {string} collection - Collection name, defaulting to "db"
+   * @param {string} defaultStr - Default string to write on file if it doesn"t exist. Defaults to "{}" Will be ignored if this.isMongo is truthy (See isMongo)
+   * @param {boolean} isMongo - Boolean indicating whether the provided path is a file or a mongodb server Defaults to true if the path starts with 'mongodb', false otherwise.
+   * @param {string} db - Database name, defaulting to 'infodbs'
+   * @param {string} collection - Collection name, defaulting to 'db'
    */
   constructor(path, defaultStr, isMongo, db, collection) {
     this.genProxy = (data) =>
@@ -89,7 +89,7 @@ class Db {
               (v) => v.name === "infodbs"
             )
           ) {
-            throw new Error("'infodbs' is not a valid db.");
+            throw new Error('"infodbs" is not a valid db.');
           }
 
           dis.collection = dis.client.db("infodbs");
@@ -99,7 +99,7 @@ class Db {
               (v) => v.name === db
             )
           ) {
-            throw new Error(`'${db}' is not a valid db.`);
+            throw new Error(` "${db}" is not a valid db.`);
           }
 
           dis.collection = dis.client.db(db);
@@ -112,7 +112,7 @@ class Db {
               ).toArray()
             ).some((v) => v.name === "db")
           ) {
-            throw new Error("'db' is not a valid collection.");
+            throw new Error('"db" is not a valid collection.');
           }
 
           dis.collection = dis.collection.collection("db");
@@ -124,7 +124,7 @@ class Db {
               ).toArray()
             ).some((v) => v.name === collection)
           ) {
-            throw new Error(`'${collection}' is not a valid collection.`);
+            throw new Error(` "${collection}" is not a valid collection.`);
           }
 
           dis.collection = dis.collection.collection(collection);
