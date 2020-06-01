@@ -12,13 +12,13 @@ try {
 }
 
 /**
- * Class represents The concept to interact with storage units (such as Dbs or JSON files) by defining variables.
+ * Class represents the concept to interact with storage units (such as Dbs or JSON files) by defining a proxy property.
  */
 class Db {
 
   /** 
-   * Create a dot.
-   * @param {path} path - Path to file or URI to mongodb server. Will throw an error if none provided or if type is incorrect
+   * Creates a new instance of Informa Db.
+   * @param {string} path - Path to file or URI to mongodb server. Will throw an error if none provided or if type is incorrect
    * @param {string} defaultStr - Default string to write on file if it doesn't exist. Defaults to '{}' Will be ignored if this.isMongo is truthy (See isMongo)
    * @param {boolean} isMongo - Boolean indicating whether the provided path is a file or a mongodb server Defaults to true if the path starts with "mongodb", false otherwise.
    * @param {string} db - Database name, defaulting to "infodbs"
@@ -143,7 +143,7 @@ class Db {
   }
 
   /**
-   * Checks if exists in index
+   * Checks if this.readOnlyValue[index] exists
    * @param {number} index - the index in the dataBase/jsonfile
    */
   exist(index) {
@@ -152,7 +152,7 @@ class Db {
   }
 
   /**
-   * async Updates the file/db to {@link this.readOnlyValue[index]}
+   * async Updates the file/db to this.readOnlyValue
    * @returns {any}  - the dataBase/jsonfile
    */
   async update() {
@@ -180,8 +180,8 @@ class Db {
   }
 
   /**
-   * Defines {@link this.readOnlyValue[index]} to value.
-   * If {@link this.readOnlyValue[index]} already exists, will thorught error
+   * Defines this.readOnlyValue[index] to value.
+   * If this.readOnlyValue[index] already exists, will throw an error
    * @param {number} index - index in the dataBase/jsonfile
    * @param {any} newValue - the new value
    */
@@ -189,7 +189,7 @@ class Db {
 
     if (this.exist(index)) {
 
-      throw console.error(`the value ${value} in the index ${index} already exists`);
+      throw console.error(`this.readOnlyValue[${index}] already exists`);
     } 
 
     if (this.saveOnChange) {
@@ -199,7 +199,7 @@ class Db {
   }
 
   /**
-   * Splices out/deletes {@link this.readOnlyValue[index]}
+   * Splices out/deletes this.readOnlyValue[index]
    * @param {number} index - the index in the dataBase/jsonfile
    */
   remove(index) {
@@ -209,7 +209,7 @@ class Db {
   }
 
   /**
-   * Defines {@link this.readOnlyValue[index]} to value.
+   * Defines this.readOnlyValue[index] to value.
    * @param {number} index - index in the dataBase/jsonfile
    * @param {any} newValue - the new value
    */
@@ -225,7 +225,7 @@ class Db {
   }
 
   /**
-   * @type {string}
+   * @type {any}
    */
   set value(setTo) {
 
