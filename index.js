@@ -1,15 +1,8 @@
-const fs = require('fs');
+const fs = require("fs");
+const utils = require("./utils");
 
-let mongo;
-let MongoClient;
-try {
-  mongo = require('mongodb');
+const { mongo, MongoClient } = utils.tryMongo();
 
-  MongoClient = mongo.MongoClient;
-} catch (err) {
-  mongo = null;
-  MongoClient = null;
-}
 class BaseDb {
   constructor(settings) {}
   /**
@@ -17,8 +10,7 @@ class BaseDb {
    * @param {number} index - the index in the dataBase/jsonfile
    */
   exist(index) {
-
-    return !!this.readOnlyValue[index]
+    return !!this.readOnlyValue[index];
   }
   /**
    * Defines this.readOnlyValue[index] to value.
@@ -27,14 +19,11 @@ class BaseDb {
    * @param {any} newValue - the new value
    */
   addSafe(index, value) {
-
     if (this.exist(index)) {
-
       throw console.error(`this.readOnlyValue[${index}] already exists`);
     }
 
     if (this.saveOnChange) {
-
       this.update()[index];
     }
   }
@@ -44,7 +33,6 @@ class BaseDb {
    * @param {number} index - the index in the dataBase/jsonfile
    */
   remove(index) {
-
     this.readOnlyValue.splice(index, 1);
     return undefined;
   }
@@ -55,7 +43,6 @@ class BaseDb {
    * @param {any} newValue - the new value
    */
   add(index, newValue) {
-
     this.readOnlyValue[index] = newValue;
 
     if (this.saveOnChange) {
@@ -67,7 +54,6 @@ class BaseDb {
 
   genProxy(data) {
     return new Proxy(data, {
-
       set: (obj, prop, val) => {
         obj[prop] = val;
         if (this.saveOnChange) {
@@ -77,13 +63,8 @@ class BaseDb {
       },
 
       deleteProperty: (pObj, prop) => {
-        const obj = pObj;
-
-        try {
-          obj.splice(prop, 1);
-        } catch (err) {
-          delete obj[prop];
-        }
+        let obj = pObj;
+        obj = utils.spliceOrDelete(obj, prop);
 
         if (this.saveOnChange) {
           this.update();
@@ -92,9 +73,10 @@ class BaseDb {
         return true;
       },
 
-      get: (obj, prop) => (typeof obj[prop] === 'object' || Array.isArray(obj[prop]) ?
-        this.genProxy(obj[prop]) :
-        obj[prop]),
+      get: (obj, prop) =>
+        typeof obj[prop] === "object" || Array.isArray(obj[prop])
+          ? this.genProxy(obj[prop])
+          : obj[prop],
     });
   }
 }
@@ -106,31 +88,21 @@ class LocaleDb extends BaseDb {
   constructor(settings) {
     super();
     //Extends is a pain
-    const {
-      path,
-      defaultStr
-    } = settings;
+    const { path, defaultStr } = settings;
 
-    if (!path) throw new Error('No path provided');
-    if (typeof path !== 'string') throw new Error('Provided path is not a string');
+    if (!path) throw new Error("No path provided");
+    if (typeof path !== "string")
+      throw new Error("Provided path is not a string");
     const dis = this;
 
     return (() => {
-
       dis.path = path;
 
       if (!fs.existsSync(path)) {
-
-        fs.writeFileSync(path, defaultStr || '{}', (err) => {
-          if (err) {
-            throw err;
-          }
-        });
+        fs.writeFileSync(path, defaultStr || "{}", utils.throwErrorIfError);
       }
 
-      dis.readOnlyValue = JSON.parse(
-        fs.readFileSync(path, 'utf8')
-      );
+      dis.readOnlyValue = JSON.parse(fs.readFileSync(path, "utf8"));
 
       dis.saveOnChange = true;
       return dis;
@@ -141,7 +113,7 @@ class LocaleDb extends BaseDb {
    * @returns {any}  - The database/jsonfile
    */
   async update() {
-    fs.writeFileSync(this.path, JSON.stringify(this.readOnlyValue, null, '\t'));
+    fs.writeFileSync(this.path, JSON.stringify(this.readOnlyValue, null, "\t"));
     return this.readOnlyValue;
   }
 
@@ -149,11 +121,9 @@ class LocaleDb extends BaseDb {
    * @type {any}
    */
   set value(setTo) {
-
     this.readOnlyValue = setTo;
 
     if (this.saveOnChange) {
-
       this.update();
     }
 
@@ -165,86 +135,76 @@ class LocaleDb extends BaseDb {
 }
 class RemoteDb extends BaseDb {
   constructor(settings) {
-    super()
-    const {
-      path,
-      db,
-      collection
-    } = settings;
+    super();
+    const { url, db, collection } = settings;
 
-    if (!path) throw new Error('No path provided');
-    if (typeof path !== 'string') throw new Error('Provided path is not a string');
+    if (!url) throw new Error("No path provided");
+    if (typeof url !== "string")
+      throw new Error("Provided path is not a string");
     const dis = this;
 
     return (async () => {
-
-      dis.path = path;
+      dis.path = url;
 
       if (!mongo) {
-        throw new Error('Mongodb is not installed. Please install it.');
+        throw new Error("Mongodb is not installed. Please install it.");
       }
 
-      dis.client = await MongoClient.connect(path, {
-
+      dis.client = await MongoClient.connect(url, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
 
-      let db = dbProp || 'informadb-dbs';
-      let collection = collectionProp || 'db';
+      let db = dbProp || "informadb-dbs";
+      let collection = collectionProp || "db";
 
+      const disListDatabase = dis.client.db().admin().listDatabases();
       if (!db) {
-        if (!(await dis.client.db().admin().listDatabases()).databases.some((v) => v.name === 'infodbs')) {
-
-          throw new Error('\'infodbs\' is not a valid db.');
+        if (
+          !(await dislistdatabase).databases.some((v) => v.name === "infodbs")
+        ) {
+          throw new Error("'infodbs' is not a valid db.");
         }
 
-        dis.collection = dis.client.db('infodbs');
+        dis.collection = dis.client.db("infodbs");
       } else {
-
-        if (!(await dis.client.db().admin().listDatabases()).databases.some((v) => v.name === db)) {
-
+        if (!(await dislistdatabase).databases.some((v) => v.name === db)) {
           throw new Error(`'${db}' is not a valid db.`);
         }
 
         dis.collection = dis.client.db(db);
       }
       if (!collection) {
-
-        if (!(await (await dis.client.db(db || 'infodbs').listCollections()).toArray()).some((v) => v.name === 'db')) {
-
-          throw new Error('\'db\' is not a valid collection.');
+        if (
+          !(
+            await (
+              await dis.client.db(db || "infodbs").listCollections()
+            ).toArray()
+          ).some((v) => v.name === "db")
+        ) {
+          throw new Error("'db' is not a valid collection.");
         }
 
-        dis.collection = dis.collection.collection('db');
+        dis.collection = dis.collection.collection("db");
       } else {
-
-        if (!(await (await dis.client.db(db || 'infodbs').listCollections()).toArray()).some((v) => v.name === collection)) {
-
+        if (
+          !(
+            await (
+              await dis.client.db(db || "infodbs").listCollections()
+            ).toArray()
+          ).some((v) => v.name === collection)
+        ) {
           throw new Error(`'${collection}' is not a valid collection.`);
         }
 
         dis.collection = dis.collection.collection(collection);
       }
 
-      dis.readOnlyValue = JSON.parse(
-        JSON.stringify(
-          await dis.collection.find({}).toArray()
-        )
-      );
-      dis.rawContent = JSON.parse(
-        JSON.stringify(
-          dis.readOnlyValue
-        )
-      );
-      dis.readOnlyValue = dis.readOnlyValue.map((val) => {
+      dis.readOnlyValue = utils.jsonContentWithFind(this.collection, {});
+      dis.rawContent = utils.jsonContent(dis.readOnlyValue);
+      dis.readOnlyValue = dis.readOnlyValue.map(utils.deleteId);
 
-        const v = val;
-        delete v._id;
-        return v;
-      });
-
-      process.on('exit', dis.client.close);
+      process.on("exit", dis.client.close);
 
       dis.saveOnChange = true;
       return dis;
@@ -255,29 +215,17 @@ class RemoteDb extends BaseDb {
    * @returns {any}  - the dataBase/jsonfile
    */
   async update() {
-
     this.props.rawContent.forEach(async (val) => {
-
       await this.props.collection.deleteOne({
-        _id: new mongo.ObjectID(val._id)
+        _id: new mongo.ObjectID(val._id),
       });
     });
 
-    if (this.readOnlyValue.length > 0) this.collection.insertMany(this.readOnlyValue);
-    this.rawContent = JSON.parse(
-      JSON.stringify(
-        await this.collection.find({}).toArray()
-      )
-    );
-    this.readOnlyValue = JSON.parse(
-      JSON.stringify(
-        this.rawContent,
-      ),
-    ).map((val) => {
-      const v = val;
-      delete v._id;
-      return v;
-    });
+    if (this.readOnlyValue.length > 0)
+      this.collection.insertMany(this.readOnlyValue);
+
+    this.rawContent = utils.jsonContentWithFind(this.collection, {});
+    this.readOnlyValue = utils.jsonContent(this.rawContent).map(utils.deleteId);
 
     return this.readOnlyValue;
   }
@@ -286,11 +234,9 @@ class RemoteDb extends BaseDb {
    * @type {any}
    */
   set value(setTo) {
-
     this.readOnlyValue = setTo;
 
     if (this.saveOnChange) {
-
       this.update();
     }
 
@@ -308,5 +254,5 @@ class RemoteDb extends BaseDb {
 
 module.exports = {
   RemoteDb,
-  LocaleDb
+  LocaleDb,
 };
