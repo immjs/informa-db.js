@@ -4,7 +4,6 @@ const utils = require('./utils');
 const { mongo, MongoClient } = utils.tryMongo();
 
 class BaseDb {
-  constructor(settings) {}
   /**
    * Checks if this.readOnlyValue[index] exists
    * @param {number} index - the index in the dataBase/jsonfile
