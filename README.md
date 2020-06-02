@@ -37,29 +37,32 @@ const Db = require('informa-db.js'); // Require the package
 ```
 Before you ask, those all work.
 ## Docs
-### new Db( path<String>, defaultString<String>, isMongo<Boolean>, db<String>, collection<String> )
-#### path
-Path to file or URI to mongodb server.
+### new LocaleDb( options{path<String>, defaultString<String>}<Object> )
+#### options.path<String>
+Path to file.
 Will throw an error if none provided or if type is incorrect
-#### defaultString
+#### options.defaultString<Sting>
 Default string to write on file if it doesn't exist.
 Defaults to '{}'
 Will be ignored if this.isMongo is truthy (See isMongo<Boolean>)
-#### isMongo<Boolean>
+### new RemoteDb( options{path<String>, db<String>, collection<String>}<Object> )
+#### options.path<String>
+URI to mongo db server.
+Will throw an error if none provided or if type is incorrect
 Boolean indicating whether the provided path is a file or a mongodb server
 Defaults to true if the path starts with "mongodb", false otherwise.
 
 Notice: If you need to interact with a mongodb server, you need to install mongodb yourself
-#### db<String>
+#### options.db<String>
 Database name, defaulting to "infodbs"
-#### collection<String>
+#### options.collection<String>
 Collection name, defaulting to "db"
 ### Db class
-#### Db.readOnlyValue<Any>
+#### Db.props.readOnlyValue<Any>
 File/collection content
 #### Db.value<Proxy<Any>>
 Proxy to this.readOnlyValue
-#### Db.saveOnChange<Boolean>
+#### Db.props.saveOnChange<Boolean>
 If is true, runs this.update() everytime a change is made (this.add(), this.addOverwrite(), this.remove() and changing this.value )
 #### Db.exist(index<Number, String>)<Boolean>
 Checks if this.readOnlyValue[index] exists
