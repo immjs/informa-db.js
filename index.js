@@ -11,6 +11,7 @@ class BaseDb {
   exist(index) {
     return !!this.readOnlyValue[index];
   }
+
   /**
    * Defines this.readOnlyValue[index] to value.
    * If this.readOnlyValue[index] already exists, will throw an error
@@ -134,7 +135,7 @@ class LocaleDb extends BaseDb {
 class RemoteDb extends BaseDb {
   constructor(settings) {
     super();
-    const { url, db, collection } = settings;
+    const { url, db = 'informadb-dbs', collection } = settings;
 
     if (!url) throw new Error('No path provided');
     if (typeof url !== 'string') throw new Error('Provided path is not a string');
@@ -152,7 +153,6 @@ class RemoteDb extends BaseDb {
         useUnifiedTopology: true,
       });
 
-      let db = dbProp || 'informadb-dbs';
       let collection = collectionProp || 'db';
 
       const disListDatabase = dis.client.db().admin().listDatabases();
