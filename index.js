@@ -48,7 +48,6 @@ class BaseDb {
     if (this.saveOnChange) {
       return this.update(this.readOnlyValue)[index];
     }
-
     return newValue;
   }
 
