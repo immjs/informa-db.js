@@ -1,13 +1,13 @@
 {
-  "name": "informa-db.js",
-  "version": "1.0.7",
+  "name": "@informath/db.js",
+  "version": "1.0.0-beta.0",
   "description": "DataBases made easier",
   "main": "index.js",
   "author": "InforMatheMusic",
   "license": "ISC",
   "repository": "https://github.com/informathemusic/informa-db.js",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
     "mongodb": "^3.5.8",
