@@ -1,4 +1,5 @@
-const fs = require('fs');
+const fs = require("fs");
+const utils = require("./utils");
 
 let mongo;
 let MongoClient;
@@ -11,7 +12,9 @@ try {
 }
 class BaseDb {
   constructor(settings) {
-    this.saveOnChange = false;
+    this.saveOnChange = settings.soc;
+    if(this.saveOnChange==null)
+      this.saveOnChange = true
   }
   genProxy(data) {
     return new Proxy(data, {
@@ -34,9 +37,11 @@ class BaseDb {
         }
         return true;
       },
-      get: (obj, prop) => (typeof obj[prop] === 'object' || Array.isArray(obj[prop]) ?
-        this.genProxy(obj[prop]) :
-        obj[prop]),
+
+      get: (obj, prop) =>
+        typeof obj[prop] === "object" && obj[prop]
+          ? this.genProxy(obj[prop])
+          : obj[prop],
     });
   }
 }
@@ -46,24 +51,26 @@ class BaseDb {
 class LocaleDb extends BaseDb {
   constructor(settings) {
     super();
-    //Extends is a pai
-    const {
-      path,
-      defaultStr
-    } = settings;
-    if (!path) throw new Error('No path provided');
-    if (typeof path !== 'string') throw new Error('Provided path is not a string');
-    this.path = path;
-    if (!fs.existsSync(path)) {
-      fs.writeFileSync(path, defaultStr || '{}', (err) => {
-        if (err) {
-          throw err;
-        }
-      });
-    }
-    this.readOnlyValue = JSON.parse(
-      fs.readFileSync(path, 'utf8')
-    );
+    //Extends is a pain
+    const { path, defaultStr } = settings;
+
+    if (!path) throw new Error("No path provided");
+    if (typeof path !== "string")
+      throw new Error("Provided path is not a string");
+    const dis = this;
+
+    return (() => {
+      dis.path = path;
+
+      if (!fs.existsSync(path)) {
+        fs.writeFileSync(path, defaultStr || "{}", utils.throwErrorIfError);
+      }
+
+      dis.readOnlyValue = JSON.parse(fs.readFileSync(path, "utf8"));
+
+      dis.saveOnChange = true;
+      return dis;
+    })();
   }
   /**
    * async Updates the file/db to this.readOnlyValue
@@ -89,19 +96,18 @@ class LocaleDb extends BaseDb {
 }
 class RemoteDb extends BaseDb {
   constructor(settings) {
-    super()
-    const {
-      path,
-      db: dbProp,
-      collection: collectionProp
-    } = settings;
-    if (!path) throw new Error('No path provided');
-    if (typeof path !== 'string') throw new Error('Provided path is not a string');
+    super();
+    const { url, db, collection } = settings;
+
+    if (!url) throw new Error("No path provided");
+    if (typeof url !== "string")
+      throw new Error("Provided path is not a string");
     const dis = this;
     return (async () => {
-      dis.path = path;
+      dis.path = url;
+
       if (!mongo) {
-        throw new Error('Mongodb is not installed. Please install it.');
+        throw new Error("Mongodb is not installed. Please install it.");
       }
       dis.client = await MongoClient.connect(path, {
         useNewUrlParser: true,
@@ -144,7 +150,7 @@ class RemoteDb extends BaseDb {
   async update() {
     this.props.rawContent.forEach(async (val) => {
       await this.props.collection.deleteOne({
-        _id: new mongo.ObjectID(val._id)
+        _id: new mongo.ObjectID(val._id),
       });
     });
     if (this.readOnlyValue.length > 0) this.collection.insertMany(this.readOnlyValue);
@@ -186,5 +192,5 @@ class RemoteDb extends BaseDb {
 
 module.exports = {
   RemoteDb,
-  LocaleDb
+  LocaleDb,
 };
