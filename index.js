@@ -1,5 +1,4 @@
 const fs = require("fs");
-const utils = require("./utils");
 
 let mongo;
 let MongoClient;
@@ -50,7 +49,7 @@ class BaseDb {
  */
 class LocaleDb extends BaseDb {
   constructor(settings) {
-    super();
+    super(settings);
     //Extends is a pain
     const { path, defaultStr } = settings;
 
@@ -63,7 +62,7 @@ class LocaleDb extends BaseDb {
       dis.path = path;
 
       if (!fs.existsSync(path)) {
-        fs.writeFileSync(path, defaultStr || "{}", utils.throwErrorIfError);
+        fs.writeFileSync(path, defaultStr || "{}", e=>{if(e)throw e});
       }
 
       dis.readOnlyValue = JSON.parse(fs.readFileSync(path, "utf8"));
