@@ -21,15 +21,6 @@ if (!players[process.env.PLAYER]) players[process.env.PLAYER] = {
   xp: 0,
 };
 
-const { value: gameState, setTo: resetGameState } = new Db('gameState.json', { exports: { setTo: true } });
-
-resetGameState({ pointerDefault: Math.floor(Math.random() * 0x100000000) });
-gameState.aaa = gameState.pointerDefault + 0xab;
-console.log(gameState);
-
-resetGameState({ pointerDefault: gameState.aaa });
-console.log(gameState);
-
 const wordDocument = new Db('calculations.json', { saveOnChange: false, exportThis: true });
 // Won't work if you destructure
 wordDocument.value.aaa = 123456;
