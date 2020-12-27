@@ -9,11 +9,10 @@ The concept is to interact with JSON files based databases by using javascript p
 ## How to use it:
 Here's a code example on how to use it:
 ```js
-const { Db, DbUtils } = require('informa-db.js'); // Require the package
+const { Db, DbUtils } = require('informa-db.js');
 
-const players = new Db('players.json'); // Uses players.json to store Database
+const players = new Db('players.json');
 
-// Instead, use this more elegant way of doing it:
 if (!players[process.env.PLAYER]) players[process.env.PLAYER] = {
   inventory: Array(20),
   equipment: Array(5),
