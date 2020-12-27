@@ -1,0 +1,21 @@
+{
+  "name": "informa-db.js",
+  "version": "2.0.0",
+  "description": "DataBases made easier",
+  "main": "index.js",
+  "author": "InforMatheMusic",
+  "license": "ISC",
+  "repository": "https://github.com/informathemusic/informa-db.js",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^2.5.0"
+  }
+}

@@ -1,0 +1,107 @@
+{
+	"AZERTY": {
+		"inventory": [
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		"equipment": [
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		"temporaryData": {
+			"hp": 20,
+			"xp": 0
+		}
+	},
+	"undefined": {
+		"inventory": [
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		"equipment": [
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		"temporaryData": {
+			"hp": 20,
+			"xp": 0
+		}
+	},
+	"EaSt": {
+		"inventory": [
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		"equipment": [
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		"temporaryData": {
+			"hp": 20,
+			"xp": 0
+		}
+	}
+}
