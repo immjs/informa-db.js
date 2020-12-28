@@ -6,6 +6,11 @@
   "author": "InforMatheMusic",
   "license": "ISC",
   "repository": "https://github.com/informathemusic/informa-db.js",
+  "keywords": [
+    "file-based database",
+    "json",
+    "backend"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
