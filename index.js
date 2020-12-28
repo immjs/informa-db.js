@@ -70,7 +70,7 @@ class Db {
    * @returns {true}
    */
   get value() {
-    return DbUtils.genProxy(this.readOnlyValue);
+    return this.genProxy(this.readOnlyValue);
   }
 }
 
