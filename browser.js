@@ -1,4 +1,4 @@
-const DbUtils = require('./utils');
+import * as DbUtils from './utils';
 
 if (!window) throw new Error('Running in the wrong environment (Did not find window)');
 
