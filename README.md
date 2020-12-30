@@ -40,27 +40,27 @@ console.log(wordDocument.value);
 All of the following also applies to the browser version
 
 ## Docs
-### `new Db( path<String>, options<Object> )`
-#### `options.soc<Boolean>` (Or `options.saveOnChange<Boolean>`)
+### `new Db( path<String>, settings<Object> )`
+#### `settings.soc<Boolean>` (Or `settings.saveOnChange<Boolean>`)
 Whether to save once the value changes
 Has to be used with enableThis
-#### `options.enableThis<Boolean>`
+#### `settings.enableThis<Boolean>`
 Whether to return the entire class or only the value.
-#### `options.path<String>`
+#### `settings.path<String>`
 Path to file.
 Will throw an error if none provided or if type is incorrect
-#### `options.defaultValue<Any>`
+#### `settings.defaultValue<Any>`
 Default string to write on file if it doesn't exist.
 Defaults to `{}`
-#### `options.saveSpace<Any>`
-Wether to indent on file save
+#### `settings.saveSpace<Any>`
+Wether not to indent on file save
 Defaults to `false`
 
 --
-The following applies only if `options.enableThis` was set to `true`
+The following applies only if `settings.enableThis` was set to `true`
 
 #### `this.update()`
-Saves `this.value` to the file named `options.path`
+Saves `this.value` to the file named `settings.path`
 #### `this.value`
 Content of the batabase
 #### `this.readOnlyValue`
