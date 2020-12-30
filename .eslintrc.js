@@ -1,5 +1,6 @@
 module.exports = {
   env: {
+    browser: true,
     commonjs: true,
     es6: true,
     node: true,
@@ -15,6 +16,7 @@ module.exports = {
     ecmaVersion: 2020,
   },
   rules: {
-    'no-param-reassign': ["error", { "props": false }],
+    'global-require': 'off',
+    'no-param-reassign': ['error', { 'props': false }],
   },
 };

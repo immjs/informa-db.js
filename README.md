@@ -48,6 +48,9 @@ Will throw an error if none provided or if type is incorrect
 #### `options.defaultValue<Any>`
 Default string to write on file if it doesn't exist.
 Defaults to `{}`
+#### `options.saveSpace<Any>`
+Wether to indent on file save
+Defaults to `false`
 
 --
 The following applies only if `options.enableThis` was set to `true`
@@ -61,9 +64,6 @@ Content of the batabase
 ### `DbUtils`
 #### `DbUtils.setAllTo( DB<Db>, setTo<Object/Array> )`
 "Resets" or sets the entire DB to a `setTo`
-
-#### `DbUtils.genProxy( data<Object/array> )`
-Used internally to *magically* listen to changes
 
 ## Contributors ✨
 

@@ -2,7 +2,7 @@
   "name": "informa-db.js",
   "version": "2.1.1",
   "description": "DataBases made easier",
-  "main": "index.js",
+  "main": "server.js",
   "author": "InforMatheMusic",
   "license": "ISC",
   "repository": "https://github.com/informathemusic/informa-db.js",
