@@ -74,4 +74,4 @@ class Db {
   }
 }
 
-module.exports = { Db, DbUtils };
+export default { Db, DbUtils };
