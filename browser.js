@@ -74,4 +74,4 @@ class Db {
   }
 }
 
-export default { Db, DbUtils };
+export { Db, DbUtils };
