@@ -12,12 +12,36 @@ class Db {
     if (!path) throw new Error('No path provided');
     if (typeof path !== 'string') throw new Error('Provided path is not a string');
     if ((path.includes('/') || path.includes('.')) && !settings.ack?.noFSPath) console.warn('You seem to want to use a file system.\nSadly, to keep this as lightweight as possible, we will not be using any filesystem library based on localstorage but we will however use the localstorage.\nPlease change your path or acknowledge this issue (by setting `settings.ack.noFSPath`) to dismiss this warning.'); // eslint-disable-line no-console
-    this.path = path.toLowerCase();
+    this.path = path.toLowerCase().replace('./', '/');
 
     if (!localStorage.getItem(this.path) || localStorage.getItem(this.path) === '') localStorage.setItem(this.path, JSON.stringify(settings.defaultValue) ?? '{}', (e) => { if (e) throw e; });
 
     this.readOnlyValue = JSON.parse(localStorage.getItem(path));
     if (!settings.exportThis || settings.exportThis == null) return this.value;
+  }
+
+  genProxy(data) {
+    return new Proxy(data, {
+      set: (obj, prop, val) => {
+        obj[prop] = val;
+        if (this.saveOnChange) {
+          this.update();
+        }
+        return true;
+      },
+      deleteProperty: (obj, prop) => {
+        delete obj[prop];
+        if (this.saveOnChange) {
+          this.update();
+        }
+        return true;
+      },
+      get: (obj, prop) => (
+        typeof obj[prop] === 'object' && obj[prop]
+          ? this.genProxy(obj[prop])
+          : obj[prop]
+      ),
+    });
   }
 
   /**
@@ -46,8 +70,8 @@ class Db {
    * @returns {true}
    */
   get value() {
-    return DbUtils.genProxy(this.readOnlyValue, this.saveOnChange, this.update);
+    return this.genProxy(this.readOnlyValue);
   }
 }
 
-export { Db, DbUtils };
+export default { Db, DbUtils };

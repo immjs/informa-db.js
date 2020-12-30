@@ -21,6 +21,30 @@ class Db {
     if (!settings.exportThis || settings.exportThis == null) return this.value;
   }
 
+  genProxy(data, saveOnChange, update) {
+    return new Proxy(data, {
+      set: (obj, prop, val) => {
+        obj[prop] = val;
+        if (saveOnChange) {
+          update();
+        }
+        return true;
+      },
+      deleteProperty: (obj, prop) => {
+        delete obj[prop];
+        if (saveOnChange) {
+          update();
+        }
+        return true;
+      },
+      get: (obj, prop) => (
+        typeof obj[prop] === 'object' && obj[prop]
+          ? this.genProxy(obj[prop])
+          : obj[prop]
+      ),
+    });
+  }
+
   /**
    * async Updates the file/db from this.readOnlyValue
    * @returns {any}  - The json file
@@ -47,7 +71,7 @@ class Db {
    * @returns {true}
    */
   get value() {
-    return DbUtils.genProxy(this.readOnlyValue, this.saveOnChange, this.update);
+    return this.genProxy(this.readOnlyValue);
   }
 }
 
