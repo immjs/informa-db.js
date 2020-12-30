@@ -1,4 +1,5 @@
 # Informa-Db.js
+*Now with browser support*
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -35,6 +36,9 @@ wordDocument.value.aaa <<= 3;
 wordDocument.value.bbb >>= Math.floor(30 * Math.random());
 console.log(wordDocument.value);
 ```
+
+All of the following also applies to the browser version
+
 ## Docs
 ### `new Db( path<String>, options<Object> )`
 #### `options.soc<Boolean>` (Or `options.saveOnChange<Boolean>`)

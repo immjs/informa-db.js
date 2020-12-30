@@ -1,6 +1,6 @@
 {
   "name": "informa-db.js",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "DataBases made easier",
   "main": "server.js",
   "author": "InforMatheMusic",
