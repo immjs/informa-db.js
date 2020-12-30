@@ -1,4 +1,4 @@
-import * as DbUtils from './utils.js'; // eslint-disable-line import/extensions
+import DbUtils from './utils.js'; // eslint-disable-line import/extensions
 
 if (!window) throw new Error('Running in the wrong environment (Did not find window)');
 
