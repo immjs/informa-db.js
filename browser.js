@@ -12,7 +12,7 @@ class Db {
     if (!path) throw new Error('No path provided');
     if (typeof path !== 'string') throw new Error('Provided path is not a string');
     if ((path.includes('/') || path.includes('.')) && !settings.ack?.noFSPath) console.warn('You seem to want to use a file system.\nSadly, to keep this as lightweight as possible, we will not be using any filesystem library based on localstorage but we will however use the localstorage.\nPlease change your path or acknowledge this issue (by setting `settings.ack.noFSPath`) to dismiss this warning.'); // eslint-disable-line no-console
-    this.path = path.toLowerCase().replace('./', '/');
+    this.path = path.toLowerCase();
 
     if (!localStorage.getItem(this.path) || localStorage.getItem(this.path) === '') localStorage.setItem(this.path, JSON.stringify(settings.defaultValue) ?? '{}', (e) => { if (e) throw e; });
 
@@ -50,4 +50,4 @@ class Db {
   }
 }
 
-export default { Db, DbUtils };
+export { Db, DbUtils };
