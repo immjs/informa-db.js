@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   setAllTo(db, setTo) {
     if (db.splice) db.splice(0, db.length, ...setTo);
     else {
