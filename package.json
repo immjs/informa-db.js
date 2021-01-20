@@ -1,6 +1,6 @@
 {
   "name": "informa-db.js",
-  "version": "5.0.0",
+  "version": "5.5.0",
   "description": "DataBases made easier",
   "main": "server.js",
   "browser": "browser.js",

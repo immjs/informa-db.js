@@ -21,19 +21,19 @@ class Db {
     if (!settings.exportThis || settings.exportThis == null) return this.value;
   }
 
-  genProxy(data, saveOnChange, update) {
+  genProxy(data) {
     return new Proxy(data, {
       set: (obj, prop, val) => {
         obj[prop] = val;
-        if (saveOnChange) {
-          update();
+        if (this.saveOnChange) {
+          this.update();
         }
         return true;
       },
       deleteProperty: (obj, prop) => {
         delete obj[prop];
-        if (saveOnChange) {
-          update();
+        if (this.saveOnChange) {
+          this.update();
         }
         return true;
       },
