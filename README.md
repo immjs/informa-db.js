@@ -1,14 +1,18 @@
 # Informa-Db.js
 *Now with browser support*
-# Code is under CC BY NC licence
+
+[![NPM](https://nodei.co/npm/informa-db.js.png)](https://npmjs.org/package/informa-db.js)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+### Dont forget to read the [LICENSE](LICENSE) 
+
 ## Concept
 The concept is to interact with JSON files based databases by using javascript proxies.
-## How to install it:
+### Installation:
 `npm i --save informa-db.js`
-## How to use it:
+### Usage:
 Here's a code example on how to use it:
 ```js
 const { Db, DbUtils } = require('informa-db.js');
@@ -40,7 +44,7 @@ console.log(wordDocument.value);
 
 All of the following also applies to the browser version
 
-## Docs
+## Documentation
 ### `new Db( path<String>, settings<Object> )`
 #### `settings.soc<Boolean>` (Or `settings.saveOnChange<Boolean>`)
 Whether to save once the value changes
